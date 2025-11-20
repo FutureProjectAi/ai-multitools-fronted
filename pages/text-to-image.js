@@ -19,57 +19,72 @@ export default function TextToImage() {
         }
       );
 
-      const result = await res.json();
+      const json = await res.json();
+      const base64 = json.data[0];
 
-      // Extract base64 from Gradio API
-      const base64 = result.data[0];
       setImage(`data:image/png;base64,${base64}`);
     } catch (err) {
-      console.log("Error:", err);
+      console.error("Error:", err);
     }
 
     setLoading(false);
   }
 
   return (
-    <div style={{ padding: 30 }}>
+    <div
+      style={{
+        maxWidth: 600,
+        margin: "0 auto",
+        padding: 20,
+        fontFamily: "Arial",
+      }}
+    >
       <h1>Text → Image Generator</h1>
 
       <textarea
-        style={{
-          width: "100%",
-          height: 100,
-          padding: 10,
-          borderRadius: 8,
-        }}
+        placeholder="Tulis prompt di sini..."
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
-        placeholder="Masukkan prompt..."
+        style={{
+          width: "100%",
+          minHeight: 120,
+          padding: 10,
+          borderRadius: 8,
+          border: "1px solid #aaa",
+        }}
       />
 
       <button
         onClick={generate}
         style={{
-          padding: 10,
           marginTop: 15,
-          borderRadius: 8,
-          background: "black",
+          width: "100%",
+          padding: 12,
+          background: "#0070f3",
           color: "white",
+          border: "none",
+          borderRadius: 8,
+          fontSize: 16,
         }}
       >
-        Generate Image
+        {loading ? "Generating..." : "Generate Image"}
       </button>
 
-      {loading && <p>Menghasilkan gambar...</p>}
+      {loading && (
+        <p style={{ marginTop: 20, textAlign: "center" }}>
+          ⏳ Sedang membuat gambar...
+        </p>
+      )}
 
       {image && (
         <img
           src={image}
           alt="Generated"
           style={{
+            width: "100%",
             marginTop: 20,
-            maxWidth: "100%",
-            borderRadius: 12,
+            borderRadius: 10,
+            border: "1px solid #ddd",
           }}
         />
       )}
